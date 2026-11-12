@@ -1607,6 +1607,15 @@
       "addRepeatingPlan": "Add repeating plan",
       "day": "Day",
       "goal": "Charging goal",
+      "holdWindow": {
+        "add": "Add hold window",
+        "description": "Keeps the charger switched on at a low current during these times, e.g. so the vehicle can run its own scheduled pre-heating from the grid. No charging goal is pursued.",
+        "from": "From",
+        "maxCurrent": "Max. current",
+        "minCurrent": "Min. current",
+        "title": "Hold power",
+        "to": "Until"
+      },
       "modalTitle": "Charging Plan",
       "none": "none",
       "once": "once",

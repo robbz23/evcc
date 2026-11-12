@@ -40,6 +40,31 @@
 					:optimizer-controlled="optimizerControlled"
 					@update="updatePlanStrategy"
 				/>
+				<div v-if="vehicle?.name" data-testid="hold-windows-section">
+					<hr class="mt-5" />
+					<h5>
+						<div
+							class="inner mb-3 d-flex align-items-center gap-2"
+							data-testid="hold-window-title"
+						>
+							{{ $t("main.chargingPlan.holdWindow.title") }}
+							<span
+								v-tooltip="$t('main.chargingPlan.holdWindow.description')"
+								class="d-inline-flex info-icon"
+								role="img"
+								tabindex="0"
+								:aria-label="$t('main.chargingPlan.holdWindow.description')"
+							>
+								<shopicon-regular-info size="s"></shopicon-regular-info>
+							</span>
+						</div>
+					</h5>
+					<ChargingPlanHoldWindows
+						:id="id"
+						:windows="holdWindows"
+						@updated="updateHoldWindows"
+					/>
+				</div>
 			</div>
 		</div>
 		<hr />
@@ -59,11 +84,13 @@
 </template>
 
 <script lang="ts">
+import "@h2d2/shopicons/es/regular/info";
 import "@h2d2/shopicons/es/regular/plus";
 import Preview from "./Preview.vue";
 import PlanStaticSettings from "./PlanStaticSettings.vue";
 import ChargingPlanStrategy from "./PlanStrategy.vue";
 import RepeatingSettings from "./PlansRepeatingSettings.vue";
+import HoldWindows from "./HoldWindowsSettings.vue";
 import Warnings from "./Warnings.vue";
 import formatter from "@/mixins/formatter";
 import collector from "@/mixins/collector";
@@ -73,6 +100,7 @@ import { debounceLeading } from "@/utils/debounceLeading";
 import { defineComponent, type PropType } from "vue";
 import type {
 	CURRENCY,
+	HoldWindow,
 	UiForecast,
 	PlanResponse,
 	PlanStrategy,
@@ -93,6 +121,7 @@ export default defineComponent({
 		ChargingPlanStaticSettings: PlanStaticSettings,
 		ChargingPlanStrategy,
 		ChargingPlansRepeatingSettings: RepeatingSettings,
+		ChargingPlanHoldWindows: HoldWindows,
 		ChargingPlanWarnings: Warnings,
 	},
 	mixins: [formatter, collector],
@@ -100,6 +129,7 @@ export default defineComponent({
 		id: [String, Number],
 		staticPlan: Object as PropType<StaticPlan>,
 		repeatingPlans: { type: Array as PropType<RepeatingPlan[]>, default: () => [] },
+		holdWindows: { type: Array as PropType<HoldWindow[]>, default: () => [] },
 		effectiveLimitSoc: Number,
 		effectivePlanTime: String,
 		effectivePlanSoc: Number,
@@ -124,6 +154,7 @@ export default defineComponent({
 		"static-plan-removed",
 		"static-plan-updated",
 		"repeating-plans-updated",
+		"hold-windows-updated",
 		"plan-strategy-updated",
 	],
 	data() {
@@ -307,6 +338,9 @@ export default defineComponent({
 		updateRepeatingPlans(plans: RepeatingPlan[]): void {
 			this.$emit("repeating-plans-updated", plans);
 		},
+		updateHoldWindows(windows: HoldWindow[]): void {
+			this.$emit("hold-windows-updated", windows);
+		},
 		previewStaticPlan(plan: StaticPlan): void {
 			this.staticPlanPreview = plan;
 			this.updatePlanPreviewDebounced();
@@ -326,6 +360,10 @@ h5 {
 	margin-bottom: -0.5rem;
 	padding: 0 0.5rem;
 	justify-content: center;
+}
+.info-icon {
+	color: var(--evcc-gray);
+	cursor: help;
 }
 h5 .inner {
 	padding: 0 1rem;

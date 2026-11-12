@@ -1352,6 +1352,24 @@ export interface PlanStrategy {
 }
 
 /** A configured vehicle. */
+/** A recurring window in which the charger is kept enabled, e.g. for vehicle pre-heating. */
+export interface HoldWindow {
+  /** Weekdays the window starts on. 0 is Sunday, 6 is Saturday. */
+  weekdays: number[];
+  /** Start time in HH:MM format. */
+  start: string;
+  /** End time in HH:MM format. An end before the start spans midnight. */
+  end: string;
+  /** Time zone of the window times, like Europe/Berlin. */
+  tz: string;
+  /** Lower current limit in A. Zero uses the loadpoint minimum. */
+  minCurrent: number;
+  /** Upper current limit in A. Zero uses the loadpoint maximum. */
+  maxCurrent: number;
+  /** Window is active. */
+  active: boolean;
+}
+
 export interface Vehicle {
   /** Unique vehicle name used in API routes and configuration. */
   name?: string;
@@ -1367,6 +1385,8 @@ export interface Vehicle {
   plan?: StaticPlan;
   /** Repeating charging plans. */
   repeatingPlans: RepeatingPlan[] | null;
+  /** Hold windows keeping the charger enabled at low current. */
+  holdWindows?: HoldWindow[] | null;
   /** Charging plan strategy. */
   planStrategy: PlanStrategy;
   /** Vehicle title for UI display. */

@@ -14,6 +14,7 @@
 					:id="id"
 					:staticPlan="staticPlan"
 					:repeatingPlans="repeatingPlans"
+					:holdWindows="holdWindows"
 					:effectiveLimitSoc="loadpoint?.effectiveLimitSoc"
 					:effectivePlanTime="loadpoint?.effectivePlanTime ?? undefined"
 					:effectivePlanSoc="loadpoint?.effectivePlanSoc"
@@ -36,6 +37,7 @@
 					@static-plan-updated="updateStaticPlan"
 					@static-plan-removed="removeStaticPlan"
 					@repeating-plans-updated="updateRepeatingPlans"
+					@hold-windows-updated="updateHoldWindows"
 					@plan-strategy-updated="updatePlanStrategy"
 				/>
 			</div>
@@ -50,6 +52,7 @@ import PlansSettings from "./PlansSettings.vue";
 import api from "@/api";
 import type {
 	CURRENCY,
+	HoldWindow,
 	UiForecast,
 	PlanStrategy,
 	RepeatingPlan,
@@ -129,6 +132,9 @@ export default defineComponent({
 			}
 			return [];
 		},
+		holdWindows(): HoldWindow[] {
+			return this.vehicle?.holdWindows ?? [];
+		},
 	},
 	methods: {
 		open(loadpointId?: string | number) {
@@ -161,6 +167,9 @@ export default defineComponent({
 		},
 		updateRepeatingPlans(plans: RepeatingPlan[]): void {
 			api.post(`${this.apiVehicle}plan/repeating`, plans);
+		},
+		updateHoldWindows(windows: HoldWindow[]): void {
+			api.post(`${this.apiVehicle}plan/hold`, windows);
 		},
 		updatePlanStrategy(strategy: PlanStrategy): void {
 			if (this.loadpoint?.socBasedPlanning) {
