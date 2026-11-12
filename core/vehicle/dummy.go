@@ -75,6 +75,15 @@ func (v *dummy) GetRepeatingPlans() []api.RepeatingPlan {
 	return nil
 }
 
+// SetHoldWindows stores every hold window
+func (v *dummy) SetHoldWindows(windows []api.HoldWindow) error {
+	return nil
+}
+
+func (v *dummy) GetHoldWindows() []api.HoldWindow {
+	return nil
+}
+
 func (v *dummy) GetPlanStrategy() api.PlanStrategy {
 	return api.PlanStrategy{}
 }

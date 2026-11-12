@@ -245,3 +245,29 @@ func planSocRemoveHandler(site site.API) http.HandlerFunc {
 		jsonWrite(w, struct{}{})
 	}
 }
+
+// holdWindowsHandler replaces all recurring hold windows of a vehicle
+func holdWindowsHandler(site site.API) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+
+		v, err := site.Vehicles().ByName(vars["name"])
+		if err != nil {
+			jsonError(w, http.StatusBadRequest, err)
+			return
+		}
+
+		var res []api.HoldWindow
+		if err := json.NewDecoder(r.Body).Decode(&res); err != nil {
+			jsonError(w, http.StatusBadRequest, err)
+			return
+		}
+
+		if err := v.SetHoldWindows(res); err != nil {
+			jsonError(w, http.StatusBadRequest, err)
+			return
+		}
+
+		jsonWrite(w, res)
+	}
+}

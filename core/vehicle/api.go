@@ -43,6 +43,11 @@ type API interface {
 	// SetRepeatingPlans stores every repeating plan
 	SetRepeatingPlans([]api.RepeatingPlan) error
 
+	// GetHoldWindows returns every hold window
+	GetHoldWindows() []api.HoldWindow
+	// SetHoldWindows stores every hold window
+	SetHoldWindows([]api.HoldWindow) error
+
 	// GetPlanStrategy returns the plan strategy
 	GetPlanStrategy() api.PlanStrategy
 	// SetPlanStrategy sets the plan strategy

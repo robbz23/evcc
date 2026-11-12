@@ -1236,7 +1236,9 @@ func (lp *Loadpoint) minSocNotReached() bool {
 // disableUnlessClimater disables the charger unless climate is active
 func (lp *Loadpoint) disableUnlessClimater() error {
 	var current float64 // zero disables
-	if lp.vehicleClimateActive() {
+	if w, ok := lp.activeHoldWindow(); ok {
+		current, _ = lp.holdWindowCurrents(w)
+	} else if lp.vehicleClimateActive() {
 		current = lp.effectiveMinCurrent()
 	}
 
@@ -1920,7 +1922,8 @@ func (lp *Loadpoint) pvMaxCurrent(sitePower, batteryPower float64, batteryBuffer
 	// read only once to simplify testing
 	minCurrent := lp.effectiveMinCurrent()
 	maxCurrent := lp.effectiveMaxCurrent()
-	alwaysCharge := lp.GetAlwaysCharge().Active()
+	_, holdWindow := lp.activeHoldWindow()
+	alwaysCharge := lp.GetAlwaysCharge().Active() || holdWindow
 
 	// always charge and the battery conditions hold charging at min current, no disable can follow
 	battery := lp.GetBatteryBoost() == boostContinue || lp.batterySupported(sitePower, batteryPower, batteryBuffered, batteryStart)
@@ -2756,6 +2759,11 @@ NO_DIM:
 			// climater keep-alive starts on the phases pv charging would start on
 			lp.pvEnableScalePhases(lp.pvEnablePhases(sitePower, batteryPower, lp.effectiveMinCurrent(), lp.effectiveMaxCurrent()))
 			targetCurrent = lp.effectiveMinCurrent()
+		}
+
+		// hold window keeps the charger enabled within its current range
+		if w, ok := lp.activeHoldWindow(); ok {
+			targetCurrent = lp.holdWindowCurrent(w, targetCurrent)
 		}
 
 		err = lp.setLimit(targetCurrent)

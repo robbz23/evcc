@@ -219,6 +219,35 @@ func (v *adapter) GetRepeatingPlans() []api.RepeatingPlan {
 	return plans
 }
 
+func (v *adapter) SetHoldWindows(windows []api.HoldWindow) error {
+	for _, w := range windows {
+		if err := w.Validate(); err != nil {
+			return err
+		}
+	}
+
+	if err := settings.SetJson(v.key()+keys.HoldWindows, windows); err != nil {
+		return err
+	}
+
+	v.log.DEBUG.Printf("update hold windows for %s to: %v", v.name, windows)
+
+	v.publish()
+	v.requestUpdate()
+
+	return nil
+}
+
+func (v *adapter) GetHoldWindows() []api.HoldWindow {
+	var windows []api.HoldWindow
+
+	if err := settings.Json(v.key()+keys.HoldWindows, &windows); err != nil {
+		return nil
+	}
+
+	return windows
+}
+
 func (v *adapter) GetPlanStrategy() api.PlanStrategy {
 	var strategy api.PlanStrategy
 	if err := settings.Json(v.key()+keys.PlanStrategy, &strategy); err != nil {

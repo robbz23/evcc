@@ -55,6 +55,20 @@ func (mr *MockAPIMockRecorder) GetAlwaysCharge() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAlwaysCharge", reflect.TypeOf((*MockAPI)(nil).GetAlwaysCharge))
 }
 
+// GetHoldWindows mocks base method.
+func (m *MockAPI) GetHoldWindows() []api.HoldWindow {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetHoldWindows")
+	ret0, _ := ret[0].([]api.HoldWindow)
+	return ret0
+}
+
+// GetHoldWindows indicates an expected call of GetHoldWindows.
+func (mr *MockAPIMockRecorder) GetHoldWindows() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetHoldWindows", reflect.TypeOf((*MockAPI)(nil).GetHoldWindows))
+}
+
 // GetLimitSoc mocks base method.
 func (m *MockAPI) GetLimitSoc() int {
 	m.ctrl.T.Helper()
@@ -178,6 +192,20 @@ func (m *MockAPI) SetAlwaysCharge(arg0 api.AlwaysCharge) {
 func (mr *MockAPIMockRecorder) SetAlwaysCharge(arg0 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetAlwaysCharge", reflect.TypeOf((*MockAPI)(nil).SetAlwaysCharge), arg0)
+}
+
+// SetHoldWindows mocks base method.
+func (m *MockAPI) SetHoldWindows(arg0 []api.HoldWindow) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SetHoldWindows", arg0)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// SetHoldWindows indicates an expected call of SetHoldWindows.
+func (mr *MockAPIMockRecorder) SetHoldWindows(arg0 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetHoldWindows", reflect.TypeOf((*MockAPI)(nil).SetHoldWindows), arg0)
 }
 
 // SetLimitSoc mocks base method.
